@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aeta.competition.dao.GroupMapper">
+    <sql id="selectGroupInfoFields">
+        groupId,groupName,introduce,leaderId,create_time
+    </sql>
+    <sql id="createGroupInfoFields">
+        groupName,introduce,leaderId,create_time
+    </sql>
+
+
+    <select id="selectGroupNameByGroupId" resultType="java.lang.String">
+        select groupName
+        from groupinfo
+        where groupId = #{groupId}
+    </select>
+
+    <select id="selectGroupInfoByGroupName" resultType="GroupInfo">
+        select <include refid="selectGroupInfoFields"></include>
+        from groupinfo
+        where groupName = #{groupName}
+    </select>
+
+
+    <select id="selectGroupIdByUserId" resultType="java.lang.Integer">
+        select groupId
+        from usergroup
+        where userId = #{userId}
+    </select>
+
+    <select id="selectUserGroupByUserId" resultType="UserGroup">
+        select id,groupId,userId
+        from usergroup
+        where userId = #{userId}
+    </select>
+
+    <insert id="createGroup" parameterType="GroupInfo" keyProperty="data.groupId">
+        insert into groupinfo (<include refid="createGroupInfoFields"></include>)
+        values(#{data.groupName},#{data.introduce},#{data.leaderId},
+        #{data.createTime})
+    </insert>
+
+
+
+
+    <insert id="addMember"  >
+        insert into usergroup (groupId,userId)
+        values(#{groupId},#{userId})
+    </insert>
+
+</mapper>

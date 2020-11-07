@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form method="post"  th:action="@{/createGroup}" enctype="multipart/form-data">
+    <table>
+        <tr>
+            <td>groupName:</td>
+            <td><input type="text" th:field="*{groupName}"></td>
+        </tr>
+        <tr>
+            <td>introduce:</td>
+            <td><input type="text" th:field="*{introduce}"></td>
+        </tr>
+
+    </table>
+</form>
+</body>
+</html>
