@@ -1,6 +1,7 @@
 package com.aeta.competition.controller;
 
 import com.aeta.competition.entity.GroupInfo;
+import com.aeta.competition.entity.UrlMessageEntity;
 import com.aeta.competition.entity.User;
 import com.aeta.competition.service.GroupService;
 import com.aeta.competition.service.UserService;
@@ -27,18 +28,16 @@ public class GroupController {
     @Autowired
     private HostHolder hostHolder;
 
-    /**
-     * test
-     */
+
     @RequestMapping(path = "/createGroup",method = RequestMethod.GET)
     public String getCreateGroupPage()
     {
-        return "/demo/view";
+        return "/site/createGroup";
     }
     @RequestMapping(path = "/joinGroup",method = RequestMethod.GET)
     public String getJoinGroupPage()
     {
-        return "/demo/view";
+        return "/site/joinGroup";
     }
 
 
@@ -47,23 +46,27 @@ public class GroupController {
      * 创建一个团队,创建者要加入队中
      */
     @RequestMapping(path="/createGroup",method = RequestMethod.POST)
-    public String createGroup(Model model, GroupInfo groupInfo){
-        User user=hostHolder.getUser();
-        if(user==null)
-            return "/site/login";
-        int leaderId = user.getId();
+    @ResponseBody
+    public UrlMessageEntity createGroup(GroupInfo groupInfo){
+//        User user=hostHolder.getUser();
+//        if(user==null){
+//            String url = "/site/login";
+//            return UrlMessageEntity.getResponse(url);
+//        }
+
+//        int leaderId = user.getId();
+        int leaderId = 10;
         groupInfo.setLeaderId(leaderId);
         groupInfo.setCreateTime(new Date());
         Map<String,Object> map = groupService.createGroup(groupInfo);
         if(map==null||map.isEmpty()){//创建成功，回到主页？
-
-            return "/site/index";
+            String url = "/site/index";
+            return UrlMessageEntity.getResponse(url);
         }
         else
         {
-            model.addAttribute("groupnameMsg",map.get("groupnameMsg"));
-            model.addAttribute("groupMsg",map.get("groupMsg"));
-            return "/site/createGroup";
+           String url = "/site/createGroup";
+            return UrlMessageEntity.getResponse(url,map);
         }
 
     }
@@ -73,22 +76,26 @@ public class GroupController {
      * 还要做用户退队吗？
      */
     @RequestMapping(path="/joinGroup",method = RequestMethod.POST)
-    public String joinGroup(Model model,int groupId,String groupName){
+    @ResponseBody
+    public UrlMessageEntity joinGroup(Integer groupId){
         User user=hostHolder.getUser();
-        if(user==null)
-            return "/site/login";
+        if(user==null){
+            String url = "/site/login";
+            return UrlMessageEntity.getResponse(url);
+        }
 
         int userId = user.getId();
 
         Map<String,Object> map = groupService.addMember(groupId,userId);
-        if(map==null||map.isEmpty()){//创建成功，回到主页？
-
-            return "/site/index";
+        if(map==null||map.isEmpty()){//加入成功，回到主页？
+            String url = "/site/index";
+            return UrlMessageEntity.getResponse(url);
         }
         else
         {
-            model.addAttribute("groupMsg",map.get("groupMsg"));
-            return "/site/joinGroup";
+            String url = "/site/joinGroup";
+           return UrlMessageEntity.getResponse(url,map);
+
         }
 
 

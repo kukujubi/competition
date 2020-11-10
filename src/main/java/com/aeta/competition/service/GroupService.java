@@ -46,7 +46,11 @@ public class GroupService {
                 map.put("groupnameMsg","团队名字不能为空!");
                 return map;
             }
-
+        if(StringUtils.isBlank(groupInfo.getIntroduce()))
+        {
+            map.put("groupnameMsg","团队介绍不能为空!");
+            return map;
+        }
             //要验证队名是否已存在
             GroupInfo groupInfo0 = groupMapper.selectGroupInfoByGroupName(groupInfo.getGroupName());
             if(groupInfo0!=null)
@@ -77,8 +81,13 @@ public class GroupService {
      * @param groupId
      * @param userId
      */
-    public Map<String,Object> addMember(int groupId,int userId){
+    public Map<String,Object> addMember(Integer groupId,int userId){
         Map<String,Object> map = new HashMap<>();
+        if (groupId == null )
+        {
+            map.put("groupMsg","团队号不能为空");
+            return map;
+        }
         //判断这个userId是不是已经在某个队里了
         UserGroup userGroup = groupMapper.selectUserGroupByUserId(userId);
         if (userGroup != null){

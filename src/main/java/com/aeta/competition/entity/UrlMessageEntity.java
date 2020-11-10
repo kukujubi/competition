@@ -28,9 +28,15 @@ public class UrlMessageEntity {
         return getResponse(url,null);
     }
 
+
+    public static UrlMessageEntity getResponse(Map<String,Object> message){
+        return getResponse(null,message);
+    }
     public static UrlMessageEntity getResponse(String url, Map<String,Object> message) {
         UrlMessageEntity urlMessageEntity = new UrlMessageEntity();
-        urlMessageEntity.setUrl(url);
+        if (url!=null){
+             urlMessageEntity.setUrl(url);
+        }
         if (message != null) {
            urlMessageEntity.setMessage(message);
         }

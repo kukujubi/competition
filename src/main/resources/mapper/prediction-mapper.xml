@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aeta.competition.dao.PredictionMapper">
+    <sql id="selectFields">
+        groupId,groupName,startTime,endTime,createTime,whether,latitude,longitude
+    </sql>
+    <sql id="insertFields">
+        groupId,groupName,startTime,endTime,createTime,whether,latitude,longitude
+    </sql>
+    <select id="selectByGroupId" resultType="PredictionResult">
+        select <include refid="selectFields"></include>
+        from prediction
+        where groupId = #{groupId}
+    </select>
+    <select id="selectByTime" resultType="PredictionResult">
+        select <include refid="selectFields"></include>
+        from prediction
+        where startTime = #{startTime} and endTime = #{endTime}
+    </select>
+
+    <select id="selectByGroupIdAndTime" resultType="PredictionResult">
+        select <include refid="selectFields"></include>
+        from prediction
+        where groupId = #{groupId} and startTime = #{startTime} and endTime = #{endTime}
+    </select>
+
+    <insert id="insertPrediction" parameterType="PredictionResult" >
+        insert into prediction (<include refid="insertFields"></include>)
+        values(#{groupId},#{groupName},#{startTime},#{endTime},#{createTime},#{whether},
+        #{latitude},#{longitude})
+    </insert>
+
+
+    <update id="updatePrediction">
+        update prediction set createTime = #{createTime},whether = #{whether},latitude = #{latitude},longitude = #{longitude}
+        where groupId = #{groupId}
+    </update>
+
+</mapper>

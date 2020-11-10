@@ -51,4 +51,16 @@ public class GroupTest {
         GroupInfo groupInfo = groupMapper.selectGroupInfoByGroupName("world");
         System.out.println(groupInfo.getLeaderId());
     }
+
+    @Test
+    public void testAddMember(){
+       Integer groupId = null;
+       int userId = 11;
+        Map<String,Object> res = groupService.addMember(groupId,userId);
+        for (Map.Entry<String, Object> entry : res.entrySet()) {
+            System.out.println("key = " + entry.getKey() + ", value = " + entry.getValue());
+        }
+
+
+    }
 }

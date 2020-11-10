@@ -22,6 +22,7 @@ import javax.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -59,7 +60,6 @@ public class LoginController implements CompetitionConstant {
 
     /**
      * 注册
-     * @param model
      * @param user
      * @return
      */
@@ -102,25 +102,27 @@ public class LoginController implements CompetitionConstant {
     }
 
     /**
-     *
+     *网页测的时候是正确的 没有用单元测试
      * @param username
      * @param password
      * @param code
      * @param rememberme
-     * @param model
      * @param response
      * @return
      */
     @RequestMapping(path ="/login",method =RequestMethod.POST )
-    public String login(String username, String password, String code, boolean rememberme,
-                        Model model,HttpSession session,HttpServletResponse response
+    @ResponseBody
+    public UrlMessageEntity login(String username, String password, String code, boolean rememberme,
+                        HttpSession session,HttpServletResponse response
                        ){
         //先判断验证码对不对 直接判断 业务层不管
         String kaptcha = (String)session.getAttribute("kaptcha");
 
         if(StringUtils.isBlank(kaptcha)||StringUtils.isBlank(code)||!kaptcha.equalsIgnoreCase(code)) {//忽略大小写
-            model.addAttribute("codeMsg","验证码不正确!");
-            return "/site/login";
+            Map<String,Object> message = new HashMap<>();
+            message.put("codeMsg","验证码不正确!");
+            String url = "/site/login";
+            return UrlMessageEntity.getResponse(url,message);
         }
         //检查账号，密码
         //没有勾记住我 就存的时间短一点
@@ -132,17 +134,22 @@ public class LoginController implements CompetitionConstant {
             cookie.setMaxAge(expiredSeconds);
             response.addCookie(cookie);
             //转到首页
-            return "redirect:/index";
+            String url = "redirect:/index";
+            return UrlMessageEntity.getResponse(url);
         }
         else
         {
-            model.addAttribute("usernameMsg",map.get("usernameMsg"));
-            model.addAttribute("passwordMsg",map.get("passwordMsg"));
-            return "/site/login";
+            Map<String,Object> message = new HashMap<>();
+            message.put("usernameMsg",map.get("usernameMsg"));
+            message.put("passwordMsg",map.get("passwordMsg"));
+            String url = "/site/login";
+            return UrlMessageEntity.getResponse(url,message);
         }
 
 
     }
+
+    //还没测过
     @RequestMapping(path="/logout",method = RequestMethod.GET)
     public String logout(@CookieValue("ticket") String ticket){
         userService.logout(ticket);

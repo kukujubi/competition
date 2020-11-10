@@ -4,11 +4,15 @@ import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.DigestUtils;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class CompetitionUtil {
+
+    private final static SimpleDateFormat shortSdf = new SimpleDateFormat("yyyy-MM-dd");
+
+    private final static SimpleDateFormat longSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
     //生成随机字符串 把UUID里的-弄成空的 只要字母和数字
     public static String generateUUID(){
         return UUID.randomUUID().toString().replaceAll("-","");
@@ -47,6 +51,55 @@ public class CompetitionUtil {
 
     }
 
+    public static Date getYesterday(Date today) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(today);
+        calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) - 1);
+        return calendar.getTime();
+    }
+
+
+
+    /**
+     * 获得本周的第一天，周一
+     *
+     * @return
+     */
+    public static Date getCurrentWeekDayStartTime() {
+        Calendar c = Calendar.getInstance();
+        try {
+            int weekday = c.get(Calendar.DAY_OF_WEEK) - 2;
+            c.add(Calendar.DATE, -weekday);
+            c.setTime(longSdf.parse(shortSdf.format(c.getTime()) + " 00:00:00"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return c.getTime();
+    }
+
+    /**
+     * 获得本周的最后一天，周日
+     *
+     * @return
+     */
+    public static Date getCurrentWeekDayEndTime() {
+        Calendar c = Calendar.getInstance();
+        try {
+            int weekday = c.get(Calendar.DAY_OF_WEEK);
+            c.add(Calendar.DATE, 8 - weekday);
+            c.setTime(longSdf.parse(shortSdf.format(c.getTime()) + " 23:59:59"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return c.getTime();
+    }
+
+    public static void main(String[] args) {
+
+        System.out.println("当前周开始："+getCurrentWeekDayStartTime().toString());
+        System.out.println("当前周结束："+getCurrentWeekDayEndTime().toString());
+
+    }
 //    public static void main(String[] args){
 //        Map<String,Object> map=new HashMap<>();
 //        map.put("name","zhang");
