@@ -8,7 +8,9 @@ public class User {
     private String password;
     private String salt;
     private String email;
-    private int type; //0代表选手。。
+    private int type; //0代表选手。。1代表管理员？未来可扩展
+    private int status;//0代表邮箱未激活 1代表激活
+    private String activationCode;
     private Date createTime;
 
     public int getId() {
@@ -65,5 +67,21 @@ public class User {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public String getActivationCode() {
+        return activationCode;
+    }
+
+    public void setActivationCode(String activationCode) {
+        this.activationCode = activationCode;
     }
 }

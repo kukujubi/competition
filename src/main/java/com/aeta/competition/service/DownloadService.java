@@ -70,4 +70,28 @@ public class DownloadService {
 
     }
 
+    /**
+     * 在directory文件夹里找以start开头的文件
+     *
+     */
+    public List<String> listDayFiles(String directory,String start) {
+
+        List<String> textFiles = new ArrayList<String>();
+
+        File dir = new File(directory);
+
+        for (File file : dir.listFiles()) {
+
+            if (file.getName().toLowerCase().startsWith(start)) {
+
+                textFiles.add(file.getName());
+
+            }
+
+        }
+
+        return textFiles;
+
+    }
+
 }

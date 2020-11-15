@@ -5,15 +5,21 @@ import com.aeta.competition.dao.UserMapper;
 import com.aeta.competition.entity.LoginTicket;
 import com.aeta.competition.entity.User;
 import com.aeta.competition.util.CompetitionUtil;
+import com.aeta.competition.util.MailClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.apache.commons.lang3.StringUtils;
 
+import java.lang.module.Configuration;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+
+import static com.aeta.competition.util.CompetitionConstant.*;
 
 @Service
 public class UserService {
@@ -22,6 +28,17 @@ public class UserService {
 
     @Autowired
     private LoginTicketMapper loginTicketMapper;
+
+    @Value("${competition.path.domain}")
+    private String domain;
+    @Value("${server.servlet.context-path}")
+    private String contextPath;
+
+    @Autowired
+    private MailClient mailClient;
+
+    @Autowired
+    private TemplateEngine templateEngine;
 
     /**
      * 用户注册
@@ -67,10 +84,39 @@ public class UserService {
         user.setSalt(CompetitionUtil.generateUUID().substring(0,5));
         user.setPassword(CompetitionUtil.md5(user.getPassword()+user.getSalt()));
         user.setType(0);
+        user.setStatus(0);
+        user.setActivationCode(CompetitionUtil.generateUUID());//激活码
         user.setCreateTime(new Date());
         userMapper.insertUser(user);//插入库里
 
+        //激活邮件
+        Context context = new Context();
+        context.setVariable("email",user.getEmail());
+        //http://localhost:8080/community/activation/101/code
+        String url = domain+contextPath+"/activation/"+user.getId()+"/"+user.getActivationCode();
+        context.setVariable("url",url);
+        String content = templateEngine.process("/mail/activation",context);
+        mailClient.sendMail(user.getEmail(),"激活账号",content);
+
         return map;
+    }
+
+    /**
+     * 邮件激活
+     * @param userId
+     * @param code
+     * @return
+     */
+    public int activation(int userId,String code) {
+        User user = userMapper.selectById(userId);
+        if (user.getStatus() == 1) {
+            return ACTIVATION_REPEAT;
+        } else if (user.getActivationCode().equals(code)) {
+            userMapper.updateStatus(userId, 1);
+            return ACTIVATION_SUCCESS;
+        } else {
+            return ACTIVATION_FAILURE;
+        }
     }
 
     /**
@@ -96,6 +142,10 @@ public class UserService {
         if(user==null)
         {
             map.put("usernameMsg", "该账号不存在");
+            return map;
+        }
+        if(user.getStatus()==0){//没有激活
+            map.put("usernameMsg", "该账号未激活");
             return map;
         }
 
@@ -143,7 +193,73 @@ public class UserService {
      */
     public User findUserById(int id){
         return userMapper.selectById(id);
+    }
 
+
+    /**
+     * 重置密码
+     * @param email
+     * @param password
+     * @return
+     */
+    public Map<String,Object> resetPassword(String email,String password){
+        Map<String,Object> map = new HashMap<>();
+        //空值处理
+        if (StringUtils.isBlank(email)){
+            map.put("emailMsg","邮箱不能为空");
+            return map;
+        }
+        if(StringUtils.isBlank(password)){
+            map.put("passwordMsg","密码不能为空");
+            return map;
+        }
+        //验证邮箱
+        User user = userMapper.selectByEmail(email);
+        if(user==null)
+        {
+            map.put("emailMsg","邮箱尚未注册");
+            return map;
+        }
+        //重置密码
+        password=CompetitionUtil.md5(password+user.getSalt());
+        userMapper.updatePassword(user.getId(),password);
+        map.put("user",user);
+        return map;
+
+
+    }
+
+    /**
+     * 修改密码（暂时不用）
+     * @param userId
+     * @param oldPassword
+     * @param newPassword
+     * @return
+     */
+    public Map<String,Object> updatePassword(int userId,String oldPassword,String newPassword){
+        Map<String, Object> map = new HashMap<>();
+
+        // 空值处理
+        if (StringUtils.isBlank(oldPassword)) {
+            map.put("oldPasswordMsg", "原密码不能为空!");
+            return map;
+        }
+        if (StringUtils.isBlank(newPassword)) {
+            map.put("newPasswordMsg", "新密码不能为空!");
+            return map;
+        }
+        //验证原始密码
+        User user=userMapper.selectById(userId);
+        oldPassword = CompetitionUtil.md5(oldPassword + user.getSalt());
+        if (!user.getPassword().equals(oldPassword)) {
+            map.put("oldPasswordMsg", "原密码输入有误!");
+            return map;
+        }
+        // 更新密码
+        newPassword = CompetitionUtil.md5(newPassword + user.getSalt());
+        userMapper.updatePassword(userId, newPassword);
+
+        return map;
     }
 
 }

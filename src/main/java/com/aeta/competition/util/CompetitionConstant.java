@@ -8,7 +8,17 @@ public interface CompetitionConstant {
 
     //数据文件位置
     String DATA_PATH = "D:/test/";
-    //打包了的数据文件位置
-    String DATA_ZIP_PATH = "D:/test/zip/";
+    //数据单天打包后的位置
+    String DATA_SINGLE_PATH = "D:/test/single/";
+    //打包了总的数据文件位置
+    String DATA_ALL_PATH = "D:/test/all/";
+
+
+    //激活成功
+    int ACTIVATION_SUCCESS = 0;
+    //重复激活
+    int ACTIVATION_REPEAT = 1;
+    //激活失败
+    int ACTIVATION_FAILURE = 2;
 
 }
