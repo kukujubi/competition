@@ -21,4 +21,10 @@ public interface CompetitionConstant {
     //激活失败
     int ACTIVATION_FAILURE = 2;
 
+
+    //实体类型：直接提问
+    int ENTITY_TYPE_COMMENT = 1;
+    //实体类型：提问下的回复
+    int ENTITY_TYPE_REPLY = 2;
+
 }
