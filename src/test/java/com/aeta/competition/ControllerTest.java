@@ -143,10 +143,10 @@ public class ControllerTest {
         ResultActions resultActions = mockMvc.perform(
                 post("/addComment")          //请求的url,请求的方法是get
                         .contentType(MediaType.APPLICATION_JSON)//数据的格式
-                        .param("entityType", "1")   //添加参数(可以添加多个)
-                        .param("entityId", "0")   //添加参数(可以添加多个)
-                        .param("targetId","0")
-                        .param("content","hihi")
+                        .param("entityType", "2")   //添加参数(可以添加多个)
+                        .param("entityId", "1")   //添加参数(可以添加多个)
+                        .param("targetId","10")
+                        .param("content","hihihi")
 
 
         )

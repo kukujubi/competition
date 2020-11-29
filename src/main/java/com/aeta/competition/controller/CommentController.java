@@ -30,8 +30,8 @@ public class CommentController implements CompetitionConstant {
     public String addComment(@RequestParam("entityType") int entityType,@RequestParam("entityId") int entityId,
                              @RequestParam("targetId") int targetId,@RequestParam("content") String content) {
         Comment comment = new Comment();
-        //comment.setUserId(hostHolder.getUser().getId());
-        comment.setUserId(9);
+        comment.setUserId(hostHolder.getUser().getId());
+       // comment.setUserId(9);
         comment.setEntityType(entityType);
         comment.setEntityId(entityId);
         comment.setTargetId(targetId);
@@ -40,6 +40,19 @@ public class CommentController implements CompetitionConstant {
         comment.setCreateTime(new Date());
 
         commentService.addComment(comment);
+
+        //如果是回复的 要再发邮件给被回复的人
+        if (entityType == CompetitionConstant.ENTITY_TYPE_REPLY){
+            if (targetId == 0){
+                //是直接回复的提问
+                int replyUserId = commentService.findCommentUserId(entityId);
+                commentService.sendReplyMail(replyUserId,comment);
+            }
+            else{
+                commentService.sendReplyMail(targetId,comment);
+            }
+        }
+
         //返回到详情页
         return "redirect:/comments";
     }
@@ -110,5 +123,7 @@ public class CommentController implements CompetitionConstant {
 
         return UrlMessageEntity.getResponse(url,message);
     }
+
+
 
 }

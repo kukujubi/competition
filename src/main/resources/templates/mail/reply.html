@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>AETA-收到回复消息</title>
+</head>
+<body>
+	<div>
+		<p>
+			<b th:text="${email}">xxx@xxx.com</b>, 您好!
+		</p>
+		<p>
+			您收到AETA一条回复消息！
+			来自<b th:text="${from}">xiaoming</b>:<b th:text="${content}">xxx@xxx.com</b>
+		</p>
+	</div>
+</body>
+</html>

@@ -34,4 +34,10 @@
         order by create_time asc
         limit #{offset},#{limit}
     </select>
+
+    <select id="findCommentUserId" resultType="int">
+        select  user_id
+        from comment
+        where status = 0 and entity_id=#{entityId}
+    </select>
 </mapper>
