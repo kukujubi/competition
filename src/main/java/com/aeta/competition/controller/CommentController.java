@@ -120,8 +120,8 @@ public class CommentController implements CompetitionConstant {
         Map<String,Object> message = new HashMap<>();
         message.put("comments",commentVoList);
         String url = "/site/comments-detail";//?
-
-        return UrlMessageEntity.getResponse(url,message);
+        String codeRes = "success";
+        return UrlMessageEntity.getResponse(url,codeRes,message);
     }
 
 

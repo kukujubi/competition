@@ -23,17 +23,22 @@
         where groupName = #{groupName}
     </select>
 
+    <select id="selectGroupInfoByLeaderId" resultType="GroupInfo">
+        select <include refid="selectGroupInfoFields"></include>
+        from groupinfo
+        where leaderId = #{leaderId}
+    </select>
 
     <select id="selectGroupIdByUserId" resultType="java.lang.Integer">
         select groupId
         from usergroup
-        where userId = #{userId}
+        where userId = #{userId} and status != 2
     </select>
 
     <select id="selectUserGroupByUserId" resultType="UserGroup">
-        select id,groupId,userId
+        select id,groupId,userId,status
         from usergroup
-        where userId = #{userId}
+        where userId = #{userId} and status != 2
     </select>
 
     <insert id="createGroup" parameterType="GroupInfo" keyProperty="data.groupId">
@@ -46,8 +51,18 @@
 
 
     <insert id="addMember"  >
-        insert into usergroup (groupId,userId)
-        values(#{groupId},#{userId})
+        insert into usergroup (groupId,userId,status)
+        values(#{groupId},#{userId},#{status})
     </insert>
+
+    <update id="confirmMember">
+        update usergroup set status = #{status} where groupId = #{groupId} and userId = #{userId}
+    </update>
+
+    <select id="selectUserGroupByGroupId" resultType="UserGroup">
+        select *
+        from usergroup
+        where groupId = #{groupId} and status != 2
+    </select>
 
 </mapper>

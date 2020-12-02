@@ -6,6 +6,8 @@ import com.aeta.competition.entity.UserGroup;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 @Mapper
 public interface GroupMapper {
 
@@ -17,8 +19,14 @@ public interface GroupMapper {
 
     GroupInfo selectGroupInfoByGroupName(String name);
 
+    GroupInfo selectGroupInfoByLeaderId(int leaderId);
+
     int createGroup(@Param("data") GroupInfo groupInfo);
 
-    int addMember(@Param("groupId") int groupId,@Param("userId") int userId);
+    int addMember(@Param("groupId") int groupId,@Param("userId") int userId,@Param("status") int status);
+
+    int confirmMember(@Param("groupId") int groupId,@Param("userId") int userId,@Param("status") int status);
+
+    List<UserGroup> selectUserGroupByGroupId(int groupId);
 
 }

@@ -139,6 +139,39 @@ public class ControllerTest {
     }
 
     @Test
+    public void confirmGroupControllerTest() throws Exception {
+        ResultActions resultActions = mockMvc.perform(
+                post("/confirmGroup")          //请求的url,请求的方法是get
+                        .contentType(MediaType.APPLICATION_JSON)//数据的格式
+                        .param("memberId", "11")   //添加参数(可以添加多个)
+                        .param("status", "1")
+
+
+        )
+                .andExpect(status().isOk()) ;   //返回的状态是200
+        MockHttpServletResponse response = resultActions.andReturn().getResponse();
+
+        response.setCharacterEncoding("UTF-8");
+
+
+        resultActions.andDo(print());         //打印出请求和相应的内容
+        String responseString = response.getContentAsString();   //将相应的数据转换为字符串
+        System.out.println("-----返回的json = " + responseString);
+    }
+
+
+    @Test
+    public void selectGroupInfo() throws Exception {
+        String mvcResultGet = mockMvc.perform(MockMvcRequestBuilders.get("/GroupInfo/world")
+                // .param("msg", "getRequest param msg") // 给get请求添加参数
+                .contentType(MediaType.APPLICATION_JSON))// 设置数据格式
+                .andDo(MockMvcResultHandlers.print())     // 打印输出发出请求的详细信息
+                .andExpect(status().isOk())     // 对返回值进行断言
+                .andReturn().getResponse().getContentAsString();        // 获取方法的返回值
+
+        System.out.println("mvcResultGet  ====" + mvcResultGet);
+    }
+    @Test
     public void addComment() throws Exception {
         ResultActions resultActions = mockMvc.perform(
                 post("/addComment")          //请求的url,请求的方法是get

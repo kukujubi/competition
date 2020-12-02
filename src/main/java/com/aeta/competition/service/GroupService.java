@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -30,11 +31,29 @@ public class GroupService {
     }
 
     /**
+     * 根据leaderId查询团队信息
+     */
+    public GroupInfo selectGroupInfoByLeaderId(int leaderId){
+        return groupMapper.selectGroupInfoByLeaderId(leaderId);
+    }
+
+    /**
      * 创建一个队伍
      */
     @Transactional(isolation = Isolation.READ_COMMITTED,propagation = Propagation.REQUIRED)
     public Map<String,Object> createGroup(GroupInfo groupInfo){
             Map<String,Object> map = new HashMap<>();
+
+            int leaderId = groupInfo.getLeaderId();
+            UserGroup userGroup = groupMapper.selectUserGroupByUserId(leaderId);
+            if (userGroup != null && userGroup.getStatus() == 1){
+                map.put("groupMsg","您已加入队伍");
+                return map;
+            }
+            if (userGroup != null && userGroup.getStatus() == 0){
+                map.put("groupMsg","您已加入队伍,等待队长确认");
+                return map;
+            }
 
             //先对空值做一个判断处理
             if(groupInfo==null){
@@ -59,18 +78,13 @@ public class GroupService {
                 return map;
 
             }
-             int leaderId = groupInfo.getLeaderId();
-            UserGroup userGroup = groupMapper.selectUserGroupByUserId(leaderId);
-             if (userGroup != null){
-                map.put("groupMsg","您已加入队伍");
-                return map;
-                }
+
              groupMapper.createGroup(groupInfo);
 
             int groupId = groupInfo.getGroupId();
 
 
-            groupMapper.addMember(groupId,leaderId);
+            groupMapper.addMember(groupId,leaderId,1);
 
             return map;
 
@@ -90,11 +104,15 @@ public class GroupService {
         }
         //判断这个userId是不是已经在某个队里了
         UserGroup userGroup = groupMapper.selectUserGroupByUserId(userId);
-        if (userGroup != null){
+        if (userGroup != null && userGroup.getStatus() == 1){
             map.put("groupMsg","您已加入队伍");
             return map;
         }
-        groupMapper.addMember(groupId,userId);
+        if (userGroup != null && userGroup.getStatus() == 0){
+            map.put("groupMsg","您已加入队伍,等待队长确认");
+            return map;
+        }
+        groupMapper.addMember(groupId,userId,0);
         return map;
     }
 
@@ -103,5 +121,28 @@ public class GroupService {
      */
     public int selectGroupIdByUserId(int userId){
         return groupMapper.selectGroupIdByUserId(userId);
+    }
+
+    /**
+     * 根据groupName查询队伍信息
+     */
+    public GroupInfo selectGroupInfoByGroupName(String groupName){
+        return groupMapper.selectGroupInfoByGroupName(groupName);
+    }
+
+    /**
+     * 确认队员加入或拒绝
+     */
+    public int confirmMember(int groupId,int memberId,int status){
+        return  groupMapper.confirmMember(groupId,memberId,status);
+    }
+
+    /**
+     * 根据groupId查询所有userGroup
+     * @param groupId
+     * @return
+     */
+    public List<UserGroup> selectUserGroupByGroupId(int groupId){
+        return groupMapper.selectUserGroupByGroupId(groupId);
     }
 }

@@ -78,16 +78,19 @@ public class LoginController implements CompetitionConstant {
     public UrlMessageEntity register(User user){
         Map<String,Object> map = userService.register(user);
         String url;
+        String codeRes;
         if(map==null||map.isEmpty()){//注册成功，先弹出这个operate-result,激活成功后才跳转到登录界面？
             url = "/site/operate-result";
             map.put("msg","注册成功，我们已经向您的邮箱发送了一封激活邮件，请尽快激活！");
             map.put("target","/site/login");
+            codeRes = "success";
         }
         else
         {
             url = "/site/register";
+            codeRes = "failure";
         }
-        return UrlMessageEntity.getResponse(url,map);
+        return UrlMessageEntity.getResponse(url,codeRes,map);
 
     }
 
@@ -104,19 +107,23 @@ public class LoginController implements CompetitionConstant {
         int result=userService.activation(userId,code);
         Map<String,Object> map = new HashMap<>();
         String url;
+        String codeRes;
         if(result==ACTIVATION_SUCCESS){
             map.put("msg","激活成功，您的账号已经可以正常使用了！");
             url = "/site/login";
+            codeRes  = "success";
         }
         else if(result==ACTIVATION_REPEAT){
             map.put("msg","无效操作，该账号已经激活过了！");
             url = "/site/login";
+            codeRes = "success";
         }
         else{
             map.put("msg","激活失败，您提供的激活码不正确");
             url = "/site/register";
+            codeRes = "failure";
         }
-        return  UrlMessageEntity.getResponse(url,map);
+        return  UrlMessageEntity.getResponse(url,codeRes,map);
     }
 
 
@@ -158,12 +165,13 @@ public class LoginController implements CompetitionConstant {
                        ){
         //先判断验证码对不对 直接判断 业务层不管
         String kaptcha = (String)session.getAttribute("kaptcha");
-
+        String codeRes;
         if(StringUtils.isBlank(kaptcha)||StringUtils.isBlank(code)||!kaptcha.equalsIgnoreCase(code)) {//忽略大小写
             Map<String,Object> message = new HashMap<>();
             message.put("codeMsg","验证码不正确!");
             String url = "/site/login";
-            return UrlMessageEntity.getResponse(url,message);
+            codeRes = "failure";
+            return UrlMessageEntity.getResponse(url,codeRes,message);
         }
         //检查账号，密码
         //没有勾记住我 就存的时间短一点
@@ -176,7 +184,8 @@ public class LoginController implements CompetitionConstant {
             response.addCookie(cookie);
             //转到首页
             String url = "redirect:/index";
-            return UrlMessageEntity.getResponse(url);
+            codeRes = "success";
+            return UrlMessageEntity.getResponse(url,codeRes);
         }
         else
         {
@@ -184,7 +193,8 @@ public class LoginController implements CompetitionConstant {
             message.put("usernameMsg",map.get("usernameMsg"));
             message.put("passwordMsg",map.get("passwordMsg"));
             String url = "/site/login";
-            return UrlMessageEntity.getResponse(url,message);
+            codeRes = "failure";
+            return UrlMessageEntity.getResponse(url,codeRes,message);
         }
 
 
@@ -238,20 +248,24 @@ public class LoginController implements CompetitionConstant {
         String code = (String) session.getAttribute("verifyCode");
         Map<String, Object> message = new HashMap<>();
         String url;
+        String codeRes;
         if (StringUtils.isBlank(verifyCode) || StringUtils.isBlank(code) || !code.equalsIgnoreCase(verifyCode)) {
 
             message.put("codeMsg", "验证码错误!");
             url = "/site/forget";
-            return UrlMessageEntity.getResponse(url, message);
+            codeRes = "failure";
+            return UrlMessageEntity.getResponse(url,codeRes, message);
         }
 
         message = userService.resetPassword(email, password);
         if (message.containsKey("user")) {
             url = "redirect:/login";
-            return UrlMessageEntity.getResponse(url);
+            codeRes = "success";
+            return UrlMessageEntity.getResponse(url,codeRes);
         } else {
             url = "/site/forget";
-            return UrlMessageEntity.getResponse(url, message);
+            codeRes = "failure";
+            return UrlMessageEntity.getResponse(url,codeRes, message);
         }
     }
 

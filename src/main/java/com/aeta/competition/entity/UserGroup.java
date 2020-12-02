@@ -4,6 +4,7 @@ public class UserGroup {
     private int id;
     private int groupId;
     private int userId;
+    private int status;//0代表未被leader确认，1代表被确认，2代表被拒绝（leader不同意，这个user可以再加入别的队）
 
     public int getId() {
         return id;
@@ -27,5 +28,13 @@ public class UserGroup {
 
     public void setUserId(int userId) {
         this.userId = userId;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 }

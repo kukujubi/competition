@@ -46,15 +46,23 @@ public class PredictionController {
     public UrlMessageEntity prediction(@RequestParam("whether") Integer whether,
                                              @RequestParam(value = "latitude",required = false) Double latitude,@RequestParam(value = "longitude",required = false)Double longitude){
         User user=hostHolder.getUser();
+        String codeRes;
         if(user==null){
             String url = "/site/login";
-            return UrlMessageEntity.getResponse(url);
+            codeRes = "failure";
+            return UrlMessageEntity.getResponse(url,codeRes);
         }
 
         int userId = user.getId();
 
         Map<String,Object> res = predictionService.predict(userId,whether,latitude,longitude);
-        return UrlMessageEntity.getResponse(res);
+        if (res.containsKey("groupMsg")){
+            codeRes = "failure";
+        }
+        else{
+            codeRes = "success";
+        }
+        return UrlMessageEntity.getResponse(codeRes,res);
     }
 
 }
