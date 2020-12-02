@@ -145,4 +145,12 @@ public class GroupService {
     public List<UserGroup> selectUserGroupByGroupId(int groupId){
         return groupMapper.selectUserGroupByGroupId(groupId);
     }
+
+    /**
+     * 查询所有队伍的基本信息
+     * @return
+     */
+    public List<GroupInfo> selectAllGroupInfo(){
+        return groupMapper.selectAllGroupInfo();
+    }
 }

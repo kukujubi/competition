@@ -29,4 +29,6 @@ public interface GroupMapper {
 
     List<UserGroup> selectUserGroupByGroupId(int groupId);
 
+    List<GroupInfo> selectAllGroupInfo();
+
 }

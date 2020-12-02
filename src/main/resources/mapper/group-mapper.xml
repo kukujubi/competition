@@ -29,6 +29,12 @@
         where leaderId = #{leaderId}
     </select>
 
+    <select id="selectAllGroupInfo" resultType="GroupInfo">
+        select <include refid="selectGroupInfoFields"></include>
+        from groupinfo
+    </select>
+
+
     <select id="selectGroupIdByUserId" resultType="java.lang.Integer">
         select groupId
         from usergroup
@@ -40,6 +46,8 @@
         from usergroup
         where userId = #{userId} and status != 2
     </select>
+
+
 
     <insert id="createGroup" parameterType="GroupInfo" keyProperty="data.groupId">
         insert into groupinfo (<include refid="createGroupInfoFields"></include>)

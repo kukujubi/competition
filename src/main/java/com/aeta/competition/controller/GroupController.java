@@ -171,5 +171,20 @@ public class GroupController {
 
     }
 
+    /**
+     * 查出所有队伍的基本信息
+     * @return
+     */
+    @RequestMapping(path="/GroupInfo",method = RequestMethod.GET)
+    @ResponseBody
+    public UrlMessageEntity selectAllGroupInfo(){
+        List<GroupInfo> list = groupService.selectAllGroupInfo();
+        Map<String,Object> map = new HashMap<>();
+        map.put("allGroupInfo",list);
+        String codeRes = "success";
+        return UrlMessageEntity.getResponse(codeRes,map);
+
+    }
+
 
 }
