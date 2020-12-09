@@ -218,5 +218,12 @@ public class ControllerTest {
         System.out.println("mvcResultGet  ====" + mvcResultGet);
     }
 
+
+    @Test
+    public void testgit() throws Exception {
+
+
+        System.out.println("mvcResultGet  ====" );
+    }
 }
 
