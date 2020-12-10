@@ -38,6 +38,14 @@ public class GroupService {
     }
 
     /**
+     * 根据groupId查询团队信息
+     */
+    public GroupInfo selectGroupInfoByGroupId(int groupId){
+        return groupMapper.selectGroupInfoByGroupId(groupId);
+    }
+
+
+    /**
      * 创建一个队伍
      */
     @Transactional(isolation = Isolation.READ_COMMITTED,propagation = Propagation.REQUIRED)
@@ -152,5 +160,12 @@ public class GroupService {
      */
     public List<GroupInfo> selectAllGroupInfo(){
         return groupMapper.selectAllGroupInfo();
+    }
+
+    /**
+     * 根据userId查询userGroup
+     */
+    public UserGroup selectUserGroupByUserId(int userId){
+        return groupMapper.selectUserGroupByUserId(userId);
     }
 }

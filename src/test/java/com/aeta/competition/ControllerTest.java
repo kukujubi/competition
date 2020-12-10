@@ -220,10 +220,15 @@ public class ControllerTest {
 
 
     @Test
-    public void testgit() throws Exception {
+    public void OwnGroupInfo() throws Exception {
+        String mvcResultGet = mockMvc.perform(MockMvcRequestBuilders.get("/OwnGroupInfo")
+                // .param("msg", "getRequest param msg") // 给get请求添加参数
+                .contentType(MediaType.APPLICATION_JSON))// 设置数据格式
+                .andDo(MockMvcResultHandlers.print())     // 打印输出发出请求的详细信息
+                .andExpect(status().isOk())     // 对返回值进行断言
+                .andReturn().getResponse().getContentAsString();        // 获取方法的返回值
 
-
-        System.out.println("mvcResultGet  ====" );
+        System.out.println("mvcResultGet  ====" + mvcResultGet);
     }
 }
 

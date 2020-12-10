@@ -166,8 +166,10 @@ public class GroupController {
             members.add(member);
         }
         map.put("members",members);
+        Map<String,Object> mapFinal = new HashMap<>();
+        mapFinal.put("data",map);
         String codeRes = "success";
-        return UrlMessageEntity.getResponse(codeRes,map);
+        return UrlMessageEntity.getResponse(codeRes,mapFinal);
 
     }
 
@@ -180,11 +182,13 @@ public class GroupController {
     public UrlMessageEntity selectAllGroupInfo(){
         List<GroupInfo> list = groupService.selectAllGroupInfo();
         Map<String,Object> map = new HashMap<>();
-        map.put("allGroupInfo",list);
+        map.put("data",list);
         String codeRes = "success";
         return UrlMessageEntity.getResponse(codeRes,map);
 
     }
+
+
 
 
 }

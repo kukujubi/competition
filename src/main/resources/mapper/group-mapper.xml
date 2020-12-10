@@ -29,6 +29,12 @@
         where leaderId = #{leaderId}
     </select>
 
+    <select id="selectGroupInfoByGroupId" resultType="GroupInfo">
+        select <include refid="selectGroupInfoFields"></include>
+        from groupinfo
+        where groupId = #{groupId}
+    </select>
+
     <select id="selectAllGroupInfo" resultType="GroupInfo">
         select <include refid="selectGroupInfoFields"></include>
         from groupinfo

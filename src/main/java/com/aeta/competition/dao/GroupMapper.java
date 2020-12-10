@@ -21,6 +21,8 @@ public interface GroupMapper {
 
     GroupInfo selectGroupInfoByLeaderId(int leaderId);
 
+    GroupInfo selectGroupInfoByGroupId(int groupId);
+
     int createGroup(@Param("data") GroupInfo groupInfo);
 
     int addMember(@Param("groupId") int groupId,@Param("userId") int userId,@Param("status") int status);
